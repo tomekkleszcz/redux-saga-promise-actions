@@ -1,0 +1,20 @@
+{
+  "name": "redux-saga-promise-actions",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "git@github.com:tomekkleszcz/redux-saga-promise-actions.git",
+  "author": "Tomek Kleszcz <tomekkleszcz@icloud.com>",
+  "license": "MIT",
+  "scripts": {
+    "prepublish": "tsc"
+  },
+  "dependencies": {
+    "lodash": "^4.17.20",
+    "redux": "^4.0.5",
+    "typesafe-actions": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.161"
+  }
+}
