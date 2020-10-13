@@ -4,11 +4,11 @@ Simple to use library which allows to return promise after an action is dispatch
 
 ## 📥 Instalation
 
-`npm install tomekkleszcz/redux-saga-promise-actions`
+`npm install redux-saga-promise-actions`
 
 or 
 
-`yarn add tomekkleszcz/redux-saga-promise-actions`
+`yarn add redux-saga-promise-actions`
 
 ## 🤔 Why this library does even exists?
 
@@ -37,7 +37,7 @@ First of all, you have to add the promise middleware to your Redux store middlew
 import {createStore, applyMiddleware} from 'redux';
 
 //Middlewares
-import {promiseMiddleware} from 'tomekkleszcz/redux-saga-promise-actions';
+import {promiseMiddleware} from 'redux-saga-promise-actions';
 import createSagaMiddleware from 'redux-saga';
 
 const sagaMiddleware = createSagaMiddleware();
@@ -53,7 +53,7 @@ under the hood so declaring actions is easy as it can be.
 #### Javascript
 ```javascript
 //Action creators
-import {createPromiseAction} from 'tomekkleszcz/redux-saga-promise-actions';
+import {createPromiseAction} from 'redux-saga-promise-actions';
 
 const signUp = createPromiseAction(
     'SIGN_UP_REQUEST', 
@@ -65,7 +65,7 @@ const signUp = createPromiseAction(
 #### Typescript
 ```typescript
 //Action creators
-import {createPromiseAction} from 'tomekkleszcz/redux-saga-promise-actions';
+import {createPromiseAction} from 'redux-saga-promise-actions';
 
 const signUp = createPromiseAction(
     'SIGN_UP_REQUEST', 
@@ -93,7 +93,7 @@ dispatch(signUp.request({email: 'example@example.org', password: 'TestPassword'}
 
 ```javascript
 //Promise actions
-import {resolvePromiseAction, rejectPromiseActions} from "tomekkleszcz/redux-saga-promise-actions";
+import {resolvePromiseAction, rejectPromiseActions} from "redux-saga-promise-actions";
 
 function* signUp(action) {
     try {
