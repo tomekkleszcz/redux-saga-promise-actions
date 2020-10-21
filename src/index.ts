@@ -10,9 +10,9 @@ export function createPromiseAction(requestArg: string, successArg: string, fail
     return function <X, Y, Z>() {
         const request = createCustomAction(
             requestArg,
-            (payload: X) =>
+            (...payload: X extends undefined ? [] : [X]) =>
                 ({
-                    payload,
+                    payload: payload[0],
                     meta: {
                         promiseAction: true,
                         promise: {}
