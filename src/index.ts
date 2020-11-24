@@ -1,12 +1,18 @@
-import {Middleware} from 'redux';
+import {Middleware} from "redux";
 
 //Utils
-import _ from 'lodash';
-import {createAction, createCustomAction} from 'typesafe-actions';
-import {Action} from 'redux';
-import {AnyAction} from 'redux';
+import _ from "lodash";
+import {createAction, createCustomAction} from "typesafe-actions";
 
-export function createPromiseAction(requestArg: string, successArg: string, failureArg: string) {
+//Types
+import {Action, AnyAction} from "redux";
+import {TypeConstant} from "typesafe-actions";
+
+export function createPromiseAction<
+    RequestType extends TypeConstant,
+    SuccessType extends TypeConstant,
+    FailureType extends TypeConstant
+>(requestArg: RequestType, successArg: SuccessType, failureArg: FailureType) {
     return function <X, Y, Z>() {
         const request = createCustomAction(
             requestArg,
@@ -15,8 +21,8 @@ export function createPromiseAction(requestArg: string, successArg: string, fail
                     payload: payload[0],
                     meta: {
                         promiseAction: true,
-                        promise: {}
-                    }
+                        promise: {},
+                    },
                 } as PromiseAction<X, Y>)
         );
         const success = createAction(successArg)<Y>();
@@ -25,17 +31,19 @@ export function createPromiseAction(requestArg: string, successArg: string, fail
         return {
             request,
             success,
-            failure
+            failure,
         };
     };
 }
 
 interface PromiseDispatch<TState, TBasicAction extends Action> {
-    <TPromise, TReturnType>(promiseAction: PromiseAction<TPromise, TReturnType>): TReturnType;
+    <TPromise, TReturnType>(
+        promiseAction: PromiseAction<TPromise, TReturnType>
+    ): TReturnType;
     <A extends TBasicAction>(action: A): A;
-    <TPromise, TResolveType, TAction extends TBasicAction>(action: TAction | PromiseAction<TPromise, TResolveType>):
-        | TAction
-        | Promise<TResolveType>;
+    <TPromise, TResolveType, TAction extends TBasicAction>(
+        action: TAction | PromiseAction<TPromise, TResolveType>
+    ): TAction | Promise<TResolveType>;
 }
 
 export interface PromiseAction<TPayload, TResolveType> {
@@ -49,13 +57,18 @@ export interface PromiseAction<TPayload, TResolveType> {
     };
 }
 
-export type PromiseMiddleware<TState = {}, TBasicAction extends Action = AnyAction> = Middleware<
+export type PromiseMiddleware<
+    TState = {},
+    TBasicAction extends Action = AnyAction
+> = Middleware<
     PromiseDispatch<TState, TBasicAction>,
     TState,
     PromiseDispatch<TState, TBasicAction>
-    >;
+>;
 
-export const promiseMiddleware: PromiseMiddleware = () => next => action => {
+export const promiseMiddleware: PromiseMiddleware = () => (next) => (
+    action
+) => {
     if (!action.meta?.promiseAction) {
         next(action);
         return new Promise(() => {});
@@ -67,24 +80,32 @@ export const promiseMiddleware: PromiseMiddleware = () => next => action => {
                 meta: {
                     promise: {
                         resolve,
-                        reject
-                    }
-                }
+                        reject,
+                    },
+                },
             })
         );
     });
 };
 
-export function resolvePromiseAction<A extends PromiseAction<any, any>, TResolvePayload>(action: A, payload?: TResolvePayload) {
+export function resolvePromiseAction<
+    A extends PromiseAction<any, any>,
+    TResolvePayload
+>(action: A, payload?: TResolvePayload) {
     action.meta?.promise?.resolve?.(payload);
 }
 
-export function rejectPromiseAction<A extends PromiseAction<any, any>, TRejectPayload = any>(action: A, payload: any) {
+export function rejectPromiseAction<
+    A extends PromiseAction<any, any>,
+    TRejectPayload = any
+>(action: A, payload: any) {
     action.meta?.promise?.reject?.(payload);
 }
 
-declare module 'redux' {
+declare module "redux" {
     export interface Dispatch<A extends Action = AnyAction> {
-        <TPayloadType = any, TReturnType = any>(promiseAction: PromiseAction<TPayloadType, TReturnType>): Promise<TReturnType>;
+        <TPayloadType = any, TReturnType = any>(
+            promiseAction: PromiseAction<TPayloadType, TReturnType>
+        ): Promise<TReturnType>;
     }
 }
