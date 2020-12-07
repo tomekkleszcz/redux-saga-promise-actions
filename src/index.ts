@@ -1,5 +1,8 @@
 import {Middleware} from "redux";
 
+//Redux saga effects
+import {put, putResolve} from 'redux-saga/effects';
+
 //Utils
 import _ from "lodash";
 import {createAction, createCustomAction} from "typesafe-actions";
@@ -46,7 +49,7 @@ interface PromiseDispatch<TState, TBasicAction extends Action> {
     ): TAction | Promise<TResolveType>;
 }
 
-export interface PromiseAction<TPayload, TResolveType> {
+export interface PromiseAction<TPayload, TResolveType> extends Action<TypeConstant> {
     payload: TPayload;
     meta: {
         promiseAction: true;
@@ -100,6 +103,10 @@ export function rejectPromiseAction<
     TRejectPayload = any
 >(action: A, payload: any) {
     action.meta?.promise?.reject?.(payload);
+}
+
+export function dispatch<A extends Action<any> | PromiseAction<any, any>>(action: A) {
+    return (action as PromiseAction<any, any>).meta?.promiseAction ? putResolve(action) : put(action);
 }
 
 declare module "redux" {
