@@ -107,3 +107,38 @@ function* signUp(action) {
 ```
 
 Depending on the result the returned promise from `dispatch(...)` will either resolve or reject.
+
+### `dispatch` helper
+
+Dispatch helper is used to dispatch the action and if it is a promise action it will wait until the action is resolved. It uses `put` and `putResolve` under the hood and returns appropriate effect depending whether the action is a promise action. 
+
+```typescript
+//Action creators
+import {createPromiseAction} from 'redux-saga-promise-actions';
+import {createAction} from 'typesafe-actions';
+
+const getProfile = createPromiseAction(
+    'GET_PROFILE_REQUEST', 
+    'GET_PROFILE_SUCCESS', 
+    'GET_PROFILE_FAILURE'
+)<
+    undefined,
+    {email: string; name: string},
+    undefined
+>();
+
+export const completeLoading = createAction('COMPLETE_LOADING')();
+```
+
+```typescript
+//Dispatch helper
+import {dispatch} from 'redux-saga-promise-actions';
+
+function* signUp() {
+    // getProfile is a promise action, it will wait until it gets resolved
+    yield dispatch(actions.getProfile.request());
+
+    // completeLoading is not a promise action, the action will be dispatched and it won't block the saga
+    yield dispatch(actions.completeLoading());
+}
+```
