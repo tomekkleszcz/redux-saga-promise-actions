@@ -116,5 +116,3 @@ declare module "redux" {
         ): Promise<TReturnType>;
     }
 }
-
-export * from './effectCreators';
