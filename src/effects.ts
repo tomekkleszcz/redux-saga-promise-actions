@@ -1,44 +1,53 @@
-import {takeEvery, takeLeading, takeLatest, call} from "redux-saga/effects";
+import {
+    takeEvery,
+    takeLeading,
+    takeLatest,
+    call,
+    put,
+} from "redux-saga/effects";
 
 //Types
-import {ActionPattern} from "redux-saga/effects";
-import {PromiseAction, rejectPromiseAction, resolvePromiseAction} from "./";
+import {PromiseActionSet, rejectPromiseAction, resolvePromiseAction} from "./";
 
 type EffectCreator = typeof takeEvery | typeof takeLeading | typeof takeLatest;
 
-function* promiseActionWrapper<A extends PromiseAction<any, any>>(action: A, worker: (action: A) => any) {
+type Worker<A extends PromiseActionSet<any, any, any, any, any, any>> = (action: ReturnType<A["request"]>) => any;
+
+function* promiseActionWrapper<
+    A extends PromiseActionSet<any, any, any, any, any, any>
+>(promiseAction: A, action: ReturnType<A['request']>, worker: Worker<A>) {
     try {
         const payload = yield call(worker, action);
         yield resolvePromiseAction(action, payload);
-    } catch(err) {
+        yield put(promiseAction.success(payload));
+    } catch (err) {
         yield rejectPromiseAction(action, err);
+        yield put(promiseAction.failure(err));
     }
 }
 
 function effectCreatorFactory<
     E extends EffectCreator,
-    A extends PromiseAction<any, any>
->(effectCreator: E, pattern: ActionPattern<A>, worker: (action: A) => any) {
-    return effectCreator(pattern, (action: A) => promiseActionWrapper(action, worker));
+    A extends PromiseActionSet<any, any, any, any, any, any>
+>(effectCreator: E, promiseAction: A, worker: Worker<A>) {
+    return effectCreator(promiseAction.request, (action: ReturnType<A['request']>) => promiseActionWrapper(promiseAction, action, worker)
+    );
 }
 
-export function takeEveryPromiseAction<A extends PromiseAction<any, any>>(
-    pattern: ActionPattern<A>,
-    worker: (action: A) => any
-) {
+export function takeEveryPromiseAction<
+    A extends PromiseActionSet<any, any, any, any, any, any>
+>(pattern: A, worker: Worker<A>) {
     return effectCreatorFactory(takeEvery, pattern, worker);
 }
 
-export function takeLeadingPromiseAction<A extends PromiseAction<any, any>>(
-    pattern: ActionPattern<A>,
-    worker: (action: A) => any
-) {
+export function takeLeadingPromiseAction<
+    A extends PromiseActionSet<any, any, any, any, any, any>
+>(pattern: A, worker: Worker<A>) {
     return effectCreatorFactory(takeLeading, pattern, worker);
 }
 
-export function takeLatestPromiseAction<A extends PromiseAction<any, any>>(
-    pattern: ActionPattern<A>,
-    worker: (action: A) => any
-) {
+export function takeLatestPromiseAction<
+    A extends PromiseActionSet<any, any, any, any, any, any>
+>(pattern: A, worker: Worker<A>) {
     return effectCreatorFactory(takeLatest, pattern, worker);
 }
