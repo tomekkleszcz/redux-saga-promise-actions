@@ -2,7 +2,7 @@
 
 Simple to use library which allows to return promise after an action is dispatched.
 
-## 📥 Instalation
+## 📥 Installation
 
 `npm install redux-saga-promise-actions`
 
