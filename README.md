@@ -91,19 +91,49 @@ dispatch(signUp.request({email: 'example@example.org', password: 'TestPassword'}
 
 #### Saga
 
+There are two ways to handle promise actions in your sagas.
+
 ```javascript
 //Promise actions
-import {resolvePromiseAction, rejectPromiseActions} from "redux-saga-promise-actions";
+import {resolvePromiseActions, rejectPromiseActions, takeEveryPromiseAction} from 'redux-saga-promise-actions';
+
+function* signUp(action) {
+    return yield axios.request(...);
+}
+
+export authSaga = [
+    takeEveryPromiseAction(actions.signUp, signUp)
+];
+```
+
+The `takeEveryPromiseAction` works just like `takeEvery` effect creator from `redux-saga`, but it wraps the saga in try catch. It accepts the promise action as the first argument and the saga as a second one. After the saga is completed it resolves promise action and dispatch the success action with saga return value. If any error occur (eg. the requests fails) the promise action is rejected and failure action is dispatched with an error as the payload.
+
+For now there are three effect creators you can use:
+* `takeEveryPromiseAction`
+* `takeLeadingPromiseAction`
+* `takeLatestPromiseAction`
+
+If you would like to have more control over your saga you can manually resolve and dispatch individual actions.
+
+```javascript
+//Promise actions
+import {resolvePromiseAction, rejectPromiseActions} from 'redux-saga-promise-actions';
 
 function* signUp(action) {
     try {
-        // Send the request
+        const response = yield axios.request(...);
 
+        yield put(actions.signUp.success(response));
         yield call(resolvePromiseAction, action, response);
     } catch(err) {
+        yield put(actions.signUp.failed(err));
         yield call(rejectPromiseActions, action, err);
     }
 }
+
+export authSaga = [
+    takeEvery(actions.signUp.request, signUp)
+];
 ```
 
 Depending on the result the returned promise from `dispatch(...)` will either resolve or reject.
