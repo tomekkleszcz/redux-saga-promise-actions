@@ -1,7 +1,7 @@
 import {Middleware} from "redux";
 
 //Redux saga effects
-import {put, putResolve} from 'redux-saga/effects';
+import {put, putResolve} from "redux-saga/effects";
 
 //Utils
 import _ from "lodash";
@@ -9,14 +9,53 @@ import {createAction, createCustomAction} from "typesafe-actions";
 
 //Types
 import {Action, AnyAction} from "redux";
-import {TypeConstant} from "typesafe-actions";
+import {TypeConstant, ActionCreatorBuilder} from "typesafe-actions";
+
+export type PromiseActionSet<
+    RequestType extends TypeConstant,
+    X,
+    SuccessType extends TypeConstant,
+    Y,
+    FailureType extends TypeConstant,
+    Z
+> = {
+    request: PromiseActionCreatorBuilder<RequestType, X, Y>;
+    success: ActionCreatorBuilder<SuccessType, Y>;
+    failure: ActionCreatorBuilder<FailureType, Z>;
+};
+
+type PromiseActionCreatorBuilder<RequestType extends TypeConstant, X, Y> = (
+    ...payload: X extends undefined ? [] : [X]
+) => PromiseAction<RequestType, X, Y>;
+
+export interface PromiseAction<
+    RequestType extends TypeConstant,
+    TPayload,
+    TResolveType
+> extends Action<RequestType> {
+    payload: TPayload;
+    meta: {
+        promiseAction: boolean;
+        promise: {
+            resolve?: (payload: TResolveType) => {};
+            reject?: (payload: any) => {};
+        };
+    };
+}
 
 export function createPromiseAction<
     RequestType extends TypeConstant,
     SuccessType extends TypeConstant,
     FailureType extends TypeConstant
 >(requestArg: RequestType, successArg: SuccessType, failureArg: FailureType) {
-    return function <X, Y, Z>() {
+    return function <X, Y, Z>(): PromiseActionSet<
+        RequestType,
+        X,
+        SuccessType,
+        Y,
+        FailureType,
+        Z
+    > {
         const request = createCustomAction(
             requestArg,
             (...payload: X extends undefined ? [] : [X]) =>
@@ -26,7 +65,7 @@ export function createPromiseAction<
                         promiseAction: true,
                         promise: {},
                     },
-                } as PromiseAction<X, Y>)
+                })
         );
         const success = createAction(successArg)<Y>();
         const failure = createAction(failureArg)<Z>();
@@ -40,24 +79,18 @@ export function createPromiseAction<
 }
 
 interface PromiseDispatch<TState, TBasicAction extends Action> {
-    <TPromise, TReturnType>(
-        promiseAction: PromiseAction<TPromise, TReturnType>
+    <RequestType extends TypeConstant, TPromise, TReturnType>(
+        promiseAction: PromiseAction<RequestType, TPromise, TReturnType>
     ): Promise<TReturnType>;
     <A extends TBasicAction>(action: A): A;
-    <TPromise, TResolveType, TAction extends TBasicAction>(
-        action: TAction | PromiseAction<TPromise, TResolveType>
+    <
+        RequestType extends TypeConstant,
+        TPromise,
+        TResolveType,
+        TAction extends TBasicAction
+    >(
+        action: TAction | PromiseAction<RequestType, TPromise, TResolveType>
     ): TAction | Promise<TResolveType>;
-}
-
-export interface PromiseAction<TPayload, TResolveType> extends Action<TypeConstant> {
-    payload: TPayload;
-    meta: {
-        promiseAction: true;
-        promise: {
-            resolve?: (payload: TResolveType) => {};
-            reject?: (payload: any) => {};
-        };
-    };
 }
 
 export type PromiseMiddleware<
@@ -92,27 +125,35 @@ export const promiseMiddleware: PromiseMiddleware = () => (next) => (
 };
 
 export function resolvePromiseAction<
-    A extends PromiseAction<any, any>,
+    A extends PromiseAction<TypeConstant, any, any>,
     TResolvePayload
 >(action: A, payload?: TResolvePayload) {
     action.meta?.promise?.resolve?.(payload);
 }
 
 export function rejectPromiseAction<
-    A extends PromiseAction<any, any>,
+    A extends PromiseAction<TypeConstant, any, any>,
     TRejectPayload = any
 >(action: A, payload: any) {
     action.meta?.promise?.reject?.(payload);
 }
 
-export function dispatch<A extends Action<any> | PromiseAction<any, any>>(action: A) {
-    return (action as PromiseAction<any, any>).meta?.promiseAction ? putResolve(action) : put(action);
+export function dispatch<
+    A extends Action<any> | PromiseAction<TypeConstant, any, any>
+>(action: A) {
+    return (action as PromiseAction<TypeConstant, any, any>).meta?.promiseAction
+        ? putResolve(action)
+        : put(action);
 }
 
 declare module "redux" {
     export interface Dispatch<A extends Action = AnyAction> {
-        <TPayloadType = any, TReturnType = any>(
-            promiseAction: PromiseAction<TPayloadType, TReturnType>
+        <
+            RequestType extends TypeConstant,
+            TPayloadType = any,
+            TReturnType = any
+        >(
+            promiseAction: PromiseAction<RequestType, TPayloadType, TReturnType>
         ): Promise<TReturnType>;
     }
 }
