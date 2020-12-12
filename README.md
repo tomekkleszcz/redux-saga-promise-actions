@@ -95,7 +95,8 @@ There are two ways to handle promise actions in your sagas.
 
 ```javascript
 //Promise actions
-import {resolvePromiseActions, rejectPromiseActions, takeEveryPromiseAction} from 'redux-saga-promise-actions';
+import {resolvePromiseActions, rejectPromiseActions} from 'redux-saga-promise-actions';
+import {takeEveryPromiseAction} from 'redux-saga-promise-actions/effects';
 
 function* signUp(action) {
     return yield axios.request(...);
