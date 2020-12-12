@@ -81,7 +81,7 @@ export function createPromiseAction<
 interface PromiseDispatch<TState, TBasicAction extends Action> {
     <RequestType extends TypeConstant, TPromise, TReturnType>(
         promiseAction: PromiseAction<RequestType, TPromise, TReturnType>
-    ): TReturnType;
+    ): Promise<TReturnType>;
     <A extends TBasicAction>(action: A): A;
     <
         RequestType extends TypeConstant,
