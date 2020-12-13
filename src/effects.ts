@@ -34,20 +34,35 @@ function effectCreatorFactory<
     );
 }
 
+/**
+ * Spawns a saga on each particular promise action dispatched to the store. If saga succeeds action is resolved with return value as payload. Otherwise it gets rejected.
+ * @param {A} action Promise action to watch
+ * @param worker A generator function
+ */
 export function takeEveryPromiseAction<
     A extends PromiseActionSet<any, any, any, any, any, any>
->(pattern: A, worker: Worker<A>) {
-    return effectCreatorFactory(takeEvery, pattern, worker);
+>(action: A, worker: Worker<A>) {
+    return effectCreatorFactory(takeEvery, action, worker);
 }
 
+/**
+ * Spawns a saga on each particular promise action dispatched to the store. Automatically cancels any previous sagas started previously if it's still running. If saga succeeds action is resolved with return value as payload. Otherwise it gets rejected.
+ * @param {A} action Promise action to watch
+ * @param worker A generator function
+ */
 export function takeLeadingPromiseAction<
     A extends PromiseActionSet<any, any, any, any, any, any>
->(pattern: A, worker: Worker<A>) {
-    return effectCreatorFactory(takeLeading, pattern, worker);
+>(action: A, worker: Worker<A>) {
+    return effectCreatorFactory(takeLeading, action, worker);
 }
 
+/**
+ * Spawns a saga on each particular promise action dispatched to the store. After spawning a task once, it blocks until spawned saga completes and then starts to listen for an action again. If saga succeeds action is resolved with return value as payload. Otherwise it gets rejected.
+ * @param {A} action Promise action to watch
+ * @param worker A generator function
+ */
 export function takeLatestPromiseAction<
     A extends PromiseActionSet<any, any, any, any, any, any>
->(pattern: A, worker: Worker<A>) {
-    return effectCreatorFactory(takeLatest, pattern, worker);
+>(action: A, worker: Worker<A>) {
+    return effectCreatorFactory(takeLatest, action, worker);
 }
