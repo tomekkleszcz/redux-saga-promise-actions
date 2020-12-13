@@ -43,6 +43,15 @@ export interface PromiseAction<
     };
 }
 
+/**
+ * Create an object containing three action-creators. 
+ * @param {string} requestArg Request action type
+ * @param {string} successArg Success action type
+ * @param {string} failureArg Failure action type
+ * @param {X} X Request action payload
+ * @param {Y} Y Success action payload
+ * @param {Z} Z Failure action payload
+ */
 export function createPromiseAction<
     RequestType extends TypeConstant,
     SuccessType extends TypeConstant,
@@ -124,6 +133,11 @@ export const promiseMiddleware: PromiseMiddleware = () => (next) => (
     });
 };
 
+/**
+ * Resolve promise action.
+ * @param {A} action Action to resolve
+ * @param {TResolvePayload} payload Payload to resolve action with
+ */
 export function resolvePromiseAction<
     A extends PromiseAction<TypeConstant, any, any>,
     TResolvePayload
@@ -131,6 +145,11 @@ export function resolvePromiseAction<
     action.meta?.promise?.resolve?.(payload);
 }
 
+/**
+ * Reject promise action.
+ * @param {A} action Action to reject
+ * @param {TResolvePayload} payload Payload to reject action with
+ */
 export function rejectPromiseAction<
     A extends PromiseAction<TypeConstant, any, any>,
     TRejectPayload = any
@@ -138,6 +157,10 @@ export function rejectPromiseAction<
     action.meta?.promise?.reject?.(payload);
 }
 
+/**
+ * Dispatch action to redux store. If the action is promise action wait until it is resolved.
+ * @param {A} action Action to dispatch
+ */
 export function dispatch<
     A extends Action<any> | PromiseAction<TypeConstant, any, any>
 >(action: A) {
