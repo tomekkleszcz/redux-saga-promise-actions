@@ -1,6 +1,5 @@
 {
     "name": "effects",
-    "version": "1.2.0",
     "main": "../dist/effects.js",
     "types": "../dist/effects.d.ts"
 }
