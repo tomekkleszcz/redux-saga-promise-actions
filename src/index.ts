@@ -13,10 +13,10 @@ import {TypeConstant, ActionCreatorBuilder} from "typesafe-actions";
 
 export type PromiseActionSet<
     RequestType extends TypeConstant,
-    X,
     SuccessType extends TypeConstant,
-    Y,
     FailureType extends TypeConstant,
+    X,
+    Y,
     Z
 > = {
     request: PromiseActionCreatorBuilder<RequestType, X, Y>;
@@ -44,7 +44,7 @@ export interface PromiseAction<
 }
 
 /**
- * Create an object containing three action-creators. 
+ * Create an object containing three action-creators.
  * @param {string} requestArg Request action type
  * @param {string} successArg Success action type
  * @param {string} failureArg Failure action type
@@ -59,23 +59,23 @@ export function createPromiseAction<
 >(requestArg: RequestType, successArg: SuccessType, failureArg: FailureType) {
     return function <X, Y, Z>(): PromiseActionSet<
         RequestType,
-        X,
         SuccessType,
-        Y,
         FailureType,
+        X,
+        Y,
         Z
     > {
-        const request = createCustomAction(
-            requestArg,
-            (...payload: X extends undefined ? [] : [X]) =>
-                ({
-                    payload: payload[0],
-                    meta: {
-                        promiseAction: true,
-                        promise: {},
-                    },
-                })
-        );
+        const request: PromiseActionCreatorBuilder<
+            RequestType,
+            X,
+            Y
+        > = createCustomAction(requestArg, (...payload) => ({
+            payload: payload[0],
+            meta: {
+                promiseAction: true,
+                promise: {},
+            },
+        }));
         const success = createAction(successArg)<Y>();
         const failure = createAction(failureArg)<Z>();
 

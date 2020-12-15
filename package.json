@@ -6,6 +6,17 @@
   "repository": "git@github.com:tomekkleszcz/redux-saga-promise-actions.git",
   "author": "Tomek Kleszcz <tomekkleszcz@icloud.com>",
   "license": "MIT",
+  "keywords": [
+    "redux",
+    "redux-saga",
+    "promise-action",
+    "promise",
+    "action",
+    "promise-middleware",
+    "middleware",
+    "redux-store",
+    "store"
+  ],
   "scripts": {
     "prepublish": "tsc"
   },
@@ -17,6 +28,6 @@
     "typesafe-actions": "^5.1.0"
   },
   "devDependencies": {
-    "typescript": "^4.1.2"
+    "typescript": "^4.1.3"
   }
 }
