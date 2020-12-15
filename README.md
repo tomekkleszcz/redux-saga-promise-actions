@@ -24,6 +24,10 @@ If I would store the submitting and errors in the Redux store why would I use Fo
 The second possible solution is to pass the Formik helpers (i.e. setSubmitting or setErrors) as an action props.
 Or... You can use this library instead. 🙂
 
+## 💈 Example
+
+Please check out `example` directory.
+
 ## 🧰 Usage
 
 ### Include promise middleware

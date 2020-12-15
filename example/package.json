@@ -1,0 +1,12 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "description": "Example app using redux-saga-promise-actions",
+  "main": "src/index.ts",
+  "author": "Tomek Kleszcz <tomekkleszcz@icloud.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.21.0"
+  }
+}
