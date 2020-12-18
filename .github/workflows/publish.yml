@@ -1,11 +1,13 @@
-name: publish
+name: NPM publish
 
 on: 
   workflow_run:
     workflows:
-      - lint
+      - ESLint
     branches:
       - master
+    types:
+      - completed
 
 jobs:
   publish:
