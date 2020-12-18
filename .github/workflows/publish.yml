@@ -1,5 +1,7 @@
 on: 
-  push:
+  workflow_run:
+    workflows:
+      - lint
     branches:
       - master
 
