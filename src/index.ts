@@ -54,7 +54,7 @@ export function createPromiseAction<
     SuccessType extends TypeConstant,
     FailureType extends TypeConstant
 >(requestArg: RequestType, successArg: SuccessType, failureArg: FailureType) {
-    return function <X, Y, Z, T>(): PromiseActionSet<
+    return function <X, Y, Z>(): PromiseActionSet<
         RequestType,
         SuccessType,
         FailureType,
