@@ -127,7 +127,7 @@ export function resolvePromiseAction<RequestType extends TypeConstant, X, Y>(
     action: PromiseAction<RequestType, X, Y>,
     payload?: Y
 ) {
-    action.meta?.promise?.resolve?.(payload);
+    action.meta.promise.resolve(payload);
 }
 
 /**
@@ -139,7 +139,7 @@ export function rejectPromiseAction<RequestType extends TypeConstant, X, Y, Z>(
     action: PromiseAction<RequestType, X, Y>,
     payload?: Z
 ) {
-    action.meta?.promise?.reject?.(payload);
+    action.meta.promise.reject(payload);
 }
 
 /**

@@ -1,5 +1,11 @@
 # 🛠️ redux-saga-promise-actions 📦
 
+[![npm](https://img.shields.io/npm/v/redux-saga-promise-actions)](https://www.npmjs.com/package/redux-saga-promise-actions)
+![npm](https://img.shields.io/npm/dm/redux-saga-promise-actions) 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/tomekkleszcz/redux-saga-promise-actions/publish)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/tomekkleszcz/redux-saga-promise-actions/tests?label=tests)
+[![Coverage Status](https://coveralls.io/repos/github/tomekkleszcz/redux-saga-promise-actions/badge.svg?branch=master)](https://coveralls.io/github/tomekkleszcz/redux-saga-promise-actions?branch=master)
+
 Simple to use library which allows to return promise after an action is dispatched.
 
 ## 📥 Installation

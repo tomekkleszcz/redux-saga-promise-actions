@@ -1,0 +1,34 @@
+name: ESLint
+
+on: push
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: Install dependencies
+        run: yarn install
+      - name: ESLint checks
+        run: yarn lint
+  test:
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: Install dependencies
+        run: yarn install
+      - name: Run tests
+        run: yarn test
+      - name: Upload coverage
+        if: github.ref == 'refs/heads/master'
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
