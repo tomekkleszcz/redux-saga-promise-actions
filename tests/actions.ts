@@ -5,11 +5,7 @@ export type TestPayload = {
     value: number;
 };
 
-export const action = createPromiseAction(
-    'TEST_ACTION_REQUEST',
-    'TEST_ACTION_SUCCESS',
-    'TEST_ACTION_FAILURE'
-)<undefined, undefined, undefined>();
+export const action = createPromiseAction('TEST_ACTION')<undefined, undefined, undefined>();
 
 export const payloadAction = createPromiseAction(
     'TEST_PAYLOAD_ACTION_REQUEST',
