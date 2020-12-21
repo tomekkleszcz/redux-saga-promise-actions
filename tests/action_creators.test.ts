@@ -1,12 +1,6 @@
 //Action creators
 import {createPromiseAction} from '../src';
 
-//Helpers
-import {dispatch} from '../src';
-
-//Actions
-import * as actions from './actions';
-
 describe('action creators', () => {
     describe('simple', () => {
         const action = createPromiseAction('TEST_ACTION')<undefined, undefined, undefined>();
@@ -42,15 +36,5 @@ describe('action creators', () => {
         it('should have correct failure action type', () => {
             expect(action.failure().type).toEqual('TEST_ACTION_FAILURE');
         });
-    });
-});
-
-describe('dispatch helper', () => {
-    it('should return putResolve if the action is a promise action', () => {
-        expect(dispatch(actions.action.request()).payload.resolve).toEqual(true);
-    });
-
-    it('should return putResolve if the action is not a promise action', () => {
-        expect(dispatch({type: 'TEST_ACTION'}).payload.resolve).toEqual(undefined);
     });
 });
