@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: 10
+          node-version: 12
       - name: Install dependencies
         run: yarn install
       - name: ESLint checks
@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: 10
+          node-version: 12
       - name: Install dependencies
         run: yarn install
       - name: Run tests
