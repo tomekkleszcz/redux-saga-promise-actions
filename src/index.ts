@@ -41,10 +41,28 @@ export interface PromiseAction<RequestType extends TypeConstant, TPayload, TReso
 }
 
 /**
+ * Create an object containging three action-creators.
+ * @param {string} type Base action type
+ * @param {X} X Request action payload
+ * @param {Y} Y Success action payload
+ * @param {Z} Z Failure action payload
+ */
+export function createPromiseAction<Type extends TypeConstant, X, Y, Z>(
+    type: Type
+): <X, Y, Z>() => PromiseActionSet<
+    `${Type}_REQUEST`,
+    `${Type}_SUCCESS`,
+    `${Type}_FAILURE`,
+    X,
+    Y,
+    Z
+>;
+
+/**
  * Create an object containing three action-creators.
- * @param {string} requestArg Request action type
- * @param {string} successArg Success action type
- * @param {string} failureArg Failure action type
+ * @param {string} requestType Request action type
+ * @param {string} successType Success action type
+ * @param {string} failureType Failure action type
  * @param {X} X Request action payload
  * @param {Y} Y Success action payload
  * @param {Z} Z Failure action payload
@@ -52,8 +70,21 @@ export interface PromiseAction<RequestType extends TypeConstant, TPayload, TReso
 export function createPromiseAction<
     RequestType extends TypeConstant,
     SuccessType extends TypeConstant,
+    FailureType extends TypeConstant,
+    X,
+    Y,
+    Z
+>(
+    requestType: RequestType,
+    successType: SuccessType,
+    failureType: FailureType
+): <X, Y, Z>() => PromiseActionSet<RequestType, SuccessType, FailureType, X, Y, Z>;
+
+export function createPromiseAction<
+    RequestType extends TypeConstant,
+    SuccessType extends TypeConstant,
     FailureType extends TypeConstant
->(requestArg: RequestType, successArg: SuccessType, failureArg: FailureType) {
+>(requestType: RequestType, successType?: SuccessType, failureType?: FailureType) {
     return function <X, Y, Z>(): PromiseActionSet<
         RequestType,
         SuccessType,
@@ -63,7 +94,7 @@ export function createPromiseAction<
         Z
     > {
         const request: PromiseActionCreatorBuilder<RequestType, X, Y> = createCustomAction(
-            requestArg,
+            successType && failureType ? requestType : <RequestType>`${requestType}_REQUEST`,
             (...payload) => ({
                 payload: payload[0],
                 meta: {
@@ -72,8 +103,8 @@ export function createPromiseAction<
                 }
             })
         );
-        const success = createAction(successArg)<Y>();
-        const failure = createAction(failureArg)<Z>();
+        const success = createAction(successType ?? <SuccessType>`${requestType}_SUCCESS`)<Y>();
+        const failure = createAction(failureType ?? <FailureType>`${requestType}_FAILURE`)<Z>();
 
         return {
             request,
