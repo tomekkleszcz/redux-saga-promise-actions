@@ -65,11 +65,7 @@ under the hood so declaring actions is easy as it can be.
 //Action creators
 import {createPromiseAction} from 'redux-saga-promise-actions';
 
-const signUp = createPromiseAction(
-    'SIGN_UP_REQUEST', 
-    'SIGN_UP_SUCCESS', 
-    'SIGN_UP_FAILURE'
-)();
+const signUp = createPromiseAction('SIGN_UP')();
 ```
 
 #### Typescript
@@ -77,9 +73,22 @@ const signUp = createPromiseAction(
 //Action creators
 import {createPromiseAction} from 'redux-saga-promise-actions';
 
+const signUp = createPromiseAction('SIGN_UP')<
+    {email: string, password: string},
+    {accessToken: string, refreshToken: string},
+    {email: string | null, password: string | null}
+>();
+```
+
+When `createPromiseAction` is called, three actions are created under the hood (in this case: `SIGN_UP_REQUEST`, `SIGN_UP_SUCCESS`, and `SIGN_UP_FAILURE`). If you do not like this action type naming convention, there is an escape catch and you can name the action types as you want.
+
+```typescript
+//Action creators
+import {createPromiseAction} from 'redux-saga-promise-actions';
+
 const signUp = createPromiseAction(
-    'SIGN_UP_REQUEST', 
-    'SIGN_UP_SUCCESS', 
+    'SIGN_UP_REQUEST',
+    'SIGN_UP_SUCCESS',
     'SIGN_UP_FAILURE'
 )<
     {email: string, password: string},
@@ -87,6 +96,8 @@ const signUp = createPromiseAction(
     {email: string | null, password: string | null}
 >();
 ```
+
+*These two examples have identical promise action, but in the second one you have full control over how the action types are named.*
 
 ### Handle actions
 
