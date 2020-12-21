@@ -80,7 +80,7 @@ const signUp = createPromiseAction('SIGN_UP')<
 >();
 ```
 
-When `createPromiseAction` is called, three actions are created under the hood (in this case `SIGN_UP_REQUEST`, `SIGN_UP_SUCCESS`, `SIGN_UP_FAILURE`). If you do not like this action type naming convention, there is an escape catch and you can name the action type as you want.
+When `createPromiseAction` is called, three actions are created under the hood (in this case: `SIGN_UP_REQUEST`, `SIGN_UP_SUCCESS`, and `SIGN_UP_FAILURE`). If you do not like this action type naming convention, there is an escape catch and you can name the action types as you want.
 
 ```typescript
 //Action creators
