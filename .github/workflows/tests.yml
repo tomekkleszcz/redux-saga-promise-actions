@@ -28,7 +28,6 @@ jobs:
       - name: Run tests
         run: yarn test
       - name: Upload coverage
-        if: github.ref == 'refs/heads/master'
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
