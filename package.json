@@ -20,7 +20,7 @@
   "scripts": {
     "lint": "./node_modules/.bin/eslint ./src/ --ext .js,.jsx,.ts,.tsx",
     "test": "./node_modules/.bin/jest",
-    "prepublish": "tsc"
+    "prepublish": "./node_modules/.bin/tsc"
   },
   "dependencies": {
     "lodash": "^4.17.20",
