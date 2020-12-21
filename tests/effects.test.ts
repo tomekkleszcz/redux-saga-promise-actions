@@ -1,13 +1,17 @@
 //Redux store
 import configureStore, {MockStore} from 'redux-mock-store';
-import createSagaMiddleware, { SagaMiddleware } from 'redux-saga';
+import createSagaMiddleware, {SagaMiddleware} from 'redux-saga';
 import {promiseMiddleware} from '../src';
 
 //Actions
 import * as actions from './actions';
 
 //Effect creators
-import {takeEveryPromiseAction, takeLeadingPromiseAction, takeLatestPromiseAction} from '../src/effects';
+import {
+    takeEveryPromiseAction,
+    takeLeadingPromiseAction,
+    takeLatestPromiseAction
+} from '../src/effects';
 
 //Utils
 import faker from 'faker';
@@ -43,10 +47,10 @@ describe('effect creators', () => {
                 sagaMiddleware.run(function* () {
                     yield takeEveryPromiseAction(actions.payloadAction, function* () {
                         return successPayload;
-                    })
+                    });
                 });
 
-                expect(
+                await expect(
                     store.dispatch(actions.payloadAction.request(requestPayload))
                 ).resolves.toEqual(successPayload);
                 expect(store.getActions()).toContainEqual(
@@ -61,10 +65,10 @@ describe('effect creators', () => {
                 sagaMiddleware.run(function* () {
                     yield takeEveryPromiseAction(actions.action, function* () {
                         return;
-                    })
+                    });
                 });
 
-                expect(store.dispatch(actions.action.request())).resolves.toBeUndefined();
+                await expect(store.dispatch(actions.action.request())).resolves.toBeUndefined();
                 expect(store.getActions()).toContainEqual(actions.action.success());
                 expect(store.getActions()).not.toContainEqual(actions.action.failure());
             });
@@ -75,10 +79,10 @@ describe('effect creators', () => {
                 sagaMiddleware.run(function* () {
                     yield takeEveryPromiseAction(actions.payloadAction, function* () {
                         throw failurePayload;
-                    })
+                    });
                 });
 
-                expect(
+                await expect(
                     store.dispatch(actions.payloadAction.request(requestPayload))
                 ).rejects.toEqual(failurePayload);
                 expect(store.getActions()).not.toContainEqual(
@@ -93,10 +97,10 @@ describe('effect creators', () => {
                 sagaMiddleware.run(function* () {
                     yield takeEveryPromiseAction(actions.action, function* () {
                         throw undefined;
-                    })
+                    });
                 });
 
-                expect(store.dispatch(actions.action.request())).rejects.toBeUndefined();
+                await expect(store.dispatch(actions.action.request())).rejects.toBeUndefined();
                 expect(store.getActions()).not.toContainEqual(actions.action.success());
                 expect(store.getActions()).toContainEqual(actions.action.failure());
             });
@@ -109,10 +113,10 @@ describe('effect creators', () => {
                 sagaMiddleware.run(function* () {
                     yield takeLeadingPromiseAction(actions.payloadAction, function* () {
                         return successPayload;
-                    })
+                    });
                 });
 
-                expect(
+                await expect(
                     store.dispatch(actions.payloadAction.request(requestPayload))
                 ).resolves.toEqual(successPayload);
                 expect(store.getActions()).toContainEqual(
@@ -127,10 +131,10 @@ describe('effect creators', () => {
                 sagaMiddleware.run(function* () {
                     yield takeLeadingPromiseAction(actions.action, function* () {
                         return;
-                    })
+                    });
                 });
 
-                expect(store.dispatch(actions.action.request())).resolves.toBeUndefined();
+                await expect(store.dispatch(actions.action.request())).resolves.toBeUndefined();
                 expect(store.getActions()).toContainEqual(actions.action.success());
                 expect(store.getActions()).not.toContainEqual(actions.action.failure());
             });
@@ -141,10 +145,10 @@ describe('effect creators', () => {
                 sagaMiddleware.run(function* () {
                     yield takeLeadingPromiseAction(actions.payloadAction, function* () {
                         throw failurePayload;
-                    })
+                    });
                 });
 
-                expect(
+                await expect(
                     store.dispatch(actions.payloadAction.request(requestPayload))
                 ).rejects.toEqual(failurePayload);
                 expect(store.getActions()).not.toContainEqual(
@@ -159,10 +163,10 @@ describe('effect creators', () => {
                 sagaMiddleware.run(function* () {
                     yield takeLeadingPromiseAction(actions.action, function* () {
                         throw undefined;
-                    })
+                    });
                 });
 
-                expect(store.dispatch(actions.action.request())).rejects.toBeUndefined();
+                await expect(store.dispatch(actions.action.request())).rejects.toBeUndefined();
                 expect(store.getActions()).not.toContainEqual(actions.action.success());
                 expect(store.getActions()).toContainEqual(actions.action.failure());
             });
@@ -175,10 +179,10 @@ describe('effect creators', () => {
                 sagaMiddleware.run(function* () {
                     yield takeLatestPromiseAction(actions.payloadAction, function* () {
                         return successPayload;
-                    })
+                    });
                 });
 
-                expect(
+                await expect(
                     store.dispatch(actions.payloadAction.request(requestPayload))
                 ).resolves.toEqual(successPayload);
                 expect(store.getActions()).toContainEqual(
@@ -193,10 +197,10 @@ describe('effect creators', () => {
                 sagaMiddleware.run(function* () {
                     yield takeLatestPromiseAction(actions.action, function* () {
                         return;
-                    })
+                    });
                 });
 
-                expect(store.dispatch(actions.action.request())).resolves.toBeUndefined();
+                await expect(store.dispatch(actions.action.request())).resolves.toBeUndefined();
                 expect(store.getActions()).toContainEqual(actions.action.success());
                 expect(store.getActions()).not.toContainEqual(actions.action.failure());
             });
@@ -207,10 +211,10 @@ describe('effect creators', () => {
                 sagaMiddleware.run(function* () {
                     yield takeLatestPromiseAction(actions.payloadAction, function* () {
                         throw failurePayload;
-                    })
+                    });
                 });
 
-                expect(
+                await expect(
                     store.dispatch(actions.payloadAction.request(requestPayload))
                 ).rejects.toEqual(failurePayload);
                 expect(store.getActions()).not.toContainEqual(
@@ -225,10 +229,10 @@ describe('effect creators', () => {
                 sagaMiddleware.run(function* () {
                     yield takeLatestPromiseAction(actions.action, function* () {
                         throw undefined;
-                    })
+                    });
                 });
 
-                expect(store.dispatch(actions.action.request())).rejects.toBeUndefined();
+                await expect(store.dispatch(actions.action.request())).rejects.toBeUndefined();
                 expect(store.getActions()).not.toContainEqual(actions.action.success());
                 expect(store.getActions()).toContainEqual(actions.action.failure());
             });
