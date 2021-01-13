@@ -116,7 +116,6 @@ There are two ways to handle promise actions in your sagas.
 
 ```javascript
 //Promise actions
-import {resolvePromiseActions, rejectPromiseActions} from 'redux-saga-promise-actions';
 import {takeEveryPromiseAction} from 'redux-saga-promise-actions/effects';
 
 function* signUp(action) {
@@ -139,17 +138,15 @@ If you would like to have more control over your saga you can manually resolve a
 
 ```javascript
 //Promise actions
-import {resolvePromiseAction, rejectPromiseActions} from 'redux-saga-promise-actions';
-
 function* signUp(action) {
     try {
         const response = yield axios.request(...);
 
         yield put(actions.signUp.success(response));
-        yield call(resolvePromiseAction, action, response);
+        resolvePromiseAction(action, response);
     } catch(err) {
         yield put(actions.signUp.failed(err));
-        yield call(rejectPromiseActions, action, err);
+        rejectPromiseAction(action, err);
     }
 }
 

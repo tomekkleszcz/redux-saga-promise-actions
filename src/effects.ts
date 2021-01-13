@@ -19,7 +19,7 @@ type EffectCreator = typeof takeEvery | typeof takeLeading | typeof takeLatest;
 
 type Worker<RequestType extends TypeConstant, X, Y> = (
     action: PromiseAction<RequestType, X, Y>
-) => any;
+) => Y;
 
 function* promiseActionWrapper<
     RequestType extends TypeConstant,
@@ -41,8 +41,8 @@ function* promiseActionWrapper<
     worker: Worker<RequestType, X, Y>
 ) {
     try {
-        const payload = yield call(worker, action);
-        yield resolvePromiseAction(action, payload);
+        const payload: Y = yield call(worker, action);
+        resolvePromiseAction(action, payload as any);
         yield put(promiseAction.success(payload));
     } catch (err) {
         yield rejectPromiseAction(action, err);
