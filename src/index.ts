@@ -156,9 +156,9 @@ export const promiseMiddleware: PromiseMiddleware = () => next => action => {
  */
 export function resolvePromiseAction<RequestType extends TypeConstant, X, Y>(
     action: PromiseAction<RequestType, X, Y>,
-    payload?: Y
+    ...payload: Y extends undefined ? [] : [Y]
 ) {
-    action.meta.promise.resolve(payload);
+    action.meta.promise.resolve(payload[0]);
 }
 
 /**
@@ -168,9 +168,9 @@ export function resolvePromiseAction<RequestType extends TypeConstant, X, Y>(
  */
 export function rejectPromiseAction<RequestType extends TypeConstant, X, Y, Z>(
     action: PromiseAction<RequestType, X, Y>,
-    payload?: Z
+    ...payload: Z extends undefined ? [] : [Z]
 ) {
-    action.meta.promise.reject(payload);
+    action.meta.promise.reject(payload[0]);
 }
 
 /**
