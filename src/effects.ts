@@ -1,25 +1,14 @@
-import {
-    takeEvery,
-    takeLeading,
-    takeLatest,
-    call,
-    put,
-} from "redux-saga/effects";
+import {takeEvery, takeLeading, takeLatest, call, put} from 'redux-saga/effects';
 
 //Types
-import {TypeConstant} from "typesafe-actions";
-import {
-    PromiseActionSet,
-    PromiseAction,
-    rejectPromiseAction,
-    resolvePromiseAction,
-} from "./";
+import {TypeConstant} from 'typesafe-actions';
+import {PromiseActionSet, PromiseAction, rejectPromiseAction, resolvePromiseAction} from './';
 
 type EffectCreator = typeof takeEvery | typeof takeLeading | typeof takeLatest;
 
 type Worker<RequestType extends TypeConstant, X, Y> = (
     action: PromiseAction<RequestType, X, Y>
-) => Y;
+) => Generator<any, Y extends undefined ? void : Y, unknown>;
 
 function* promiseActionWrapper<
     RequestType extends TypeConstant,
@@ -29,14 +18,7 @@ function* promiseActionWrapper<
     Y,
     Z
 >(
-    promiseAction: PromiseActionSet<
-        RequestType,
-        SuccessType,
-        FailureType,
-        X,
-        Y,
-        Z
-    >,
+    promiseAction: PromiseActionSet<RequestType, SuccessType, FailureType, X, Y, Z>,
     action: PromiseAction<RequestType, X, Y>,
     worker: Worker<RequestType, X, Y>
 ) {
@@ -60,20 +42,11 @@ function effectCreatorFactory<
     Z
 >(
     effectCreator: E,
-    promiseAction: PromiseActionSet<
-        RequestType,
-        SuccessType,
-        FailureType,
-        X,
-        Y,
-        Z
-    >,
+    promiseAction: PromiseActionSet<RequestType, SuccessType, FailureType, X, Y, Z>,
     worker: Worker<RequestType, X, Y>
 ) {
-    return effectCreator(
-        promiseAction.request,
-        (action: PromiseAction<RequestType, X, Y>) =>
-            promiseActionWrapper(promiseAction, action, worker)
+    return effectCreator(promiseAction.request, (action: PromiseAction<RequestType, X, Y>) =>
+        promiseActionWrapper(promiseAction, action, worker)
     );
 }
 
