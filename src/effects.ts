@@ -24,7 +24,7 @@ function* promiseActionWrapper<
 ) {
     try {
         const payload: Y = yield call(worker, action);
-        resolvePromiseAction(action, payload as any);
+        resolvePromiseAction(action, payload);
         yield put(promiseAction.success(payload));
     } catch (err) {
         yield rejectPromiseAction(action, err);
